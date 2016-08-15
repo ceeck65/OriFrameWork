@@ -1,55 +1,72 @@
 <?php
 
-	class Controlador {
+class Controlador
+{
 
-		public function Index()
-		{
-		   	$url = $_SERVER['REQUEST_URI'];
-		    $url = explode('/', $url);
+    private static $instance;
 
-		     $controlador = $url[3];
 
-		      if (isset($url[4])) {
-		      	$metodo = $url[4];
-		      }
-		       else {
-		      	$metodo = "Index";
-		      }
+    public function __construct()
+    {
+        self::$instance =& $this;
+    }
 
-					if (isset($url[3])) {
-						$controlador = $url[3];
-					} else {
-						$controlador = "Inicio";
-					}
 
-		      $clase_controlador = ucfirst($controlador);
-		      if (file_exists(RUTA_CONTROLADORES .  $clase_controlador . ".php")) {
-							require "aplicacion/controladores/" .$clase_controlador . ".php";
-							$metodos = get_class_methods($clase_controlador);
-								if (in_array(Controlador::MetodoCamello($metodo), $metodos)) {
-											call_user_func(array($clase_controlador, Controlador::MetodoCamello($metodo)));
-								}
-								else if ($metodo = "Index") {
-									call_user_func(array($clase_controlador, $metodo));
-								}
-								else {
-									 echo MENSAJE_NO_METODO;
-								}
-				  } else {
-				  	echo NO_CONTROLADOR;
-				  }
-		}
+    public function Index()
+    {
+        $url = $_SERVER['REQUEST_URI'];
+        $url = explode('/', $url);
 
-		public function MetodoCamello($value)
-		{
-			if(strrpos($value, "-")){
-				return ucfirst(preg_replace("/\-(.)/e","strtoupper('\\1')", $value));
-			}
-			if(strrpos($value, "_")){
-				return ucfirst(preg_replace("/\_(.)/e","strtoupper('\\1')", $value));
-			}
+        $controlador = $url[1];
+        $metodo = $url[2];
 
-		}
-	}
+        if (isset($controlador)) {
+            $controlador;
+        } elseif (empty($controlador)) {
+            $controlador = "Index";
+        }
 
-	Controlador::Index();
+        if (isset($metodo)) {
+            $metodo;
+        } else {
+            $metodo = "Index";
+        }
+
+        $clase_controlador = ucfirst($controlador);
+        if (file_exists(RUTA_CONTROLADORES . $clase_controlador . ".php")) {
+            require "aplicacion/controladores/" . $clase_controlador . ".php";
+            $metodos = get_class_methods($clase_controlador);
+
+            if (in_array($this->MetodoCamello($metodo), $metodos)) {
+                call_user_func(array($clase_controlador, $this->MetodoCamello($metodo)));
+            } else if ($metodo = "Index") {
+                call_user_func(array($clase_controlador, "Index"));
+            } else {
+                echo MENSAJE_NO_METODO;
+            }
+        } else {
+            echo NO_CONTROLADOR;
+        }
+    }
+
+    public static function MetodoCamello($value)
+    {
+
+        if ($pos = strrpos($value, "-")) {
+            return ucfirst(preg_replace("/\-(.)/e", "strtoupper('\\1')", $value));
+        }
+        if ($pos = strrpos($value, "_")) {
+            //	return ucfirst(preg_replace_callback("/\_(.)/e","strtoupper('\\1')", $value));
+            return $str[$pos + 1] = strtoupper($value[$pos + 1]);
+        }
+
+    }
+
+
+
+}
+
+$index = new Controlador();
+$index->Index();
+
+

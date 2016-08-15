@@ -6,5 +6,5 @@
 	define("BASE_DATOS", "biblioteca");
 
 	
-	define("NO_CONTROLADOR",  "<h1>!Página no encontrada!</h1>");
+	define("NO_CONTROLADOR",  "Pagina no encontrada");
 	

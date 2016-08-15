@@ -2,14 +2,21 @@
 
 	class Libros extends Controlador {
 
-		public function index()
+		public  function index()
 		{
-				Vistas::cargarVista("libros/libros");
+			Vistas::cargarVista("libros/libros");
 		}
 
-		public function RegistrarLibros()
+		public function RegistrarLibros($parametos)
 		{
-			Vistas::cargarVista("libros/registrar");
+			// $this->Vista()->cargarVista("libros/
+
+			echo $parametos;
+
+			$classObj = new Vistas();
+			$classObj->cargarVista("libros/registrar");
+
+
 		}
 
 	}
